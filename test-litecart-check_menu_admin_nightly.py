@@ -6,7 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from data.litecart import url_admin
 from data.litecart import path_to_nightly
 
-import time
 
 @pytest.fixture
 def driver(request):
@@ -23,12 +22,8 @@ def test_litecart_check_menu_admin(driver):
     driver.find_element_by_name('login').click()
     WebDriverWait(driver, 10).until(EC.title_is('My Store'))
 
-    # open menu Appearence
-    # vertical_menu = driver.find_element_by_class_name("list-vertical")
-    # menu = vertical_menu.find_elements_by_tag_name("a")
 
     count_main_menu = driver.find_elements_by_id("app-")
-
 
     if len(count_main_menu):
         for iter in range(len(count_main_menu)):
