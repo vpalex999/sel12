@@ -26,14 +26,15 @@ def test_litecart_check_countries_and_zones(driver):
 
     assert len(menu) != 0
 
+    # Stage 1
+    # Check sorting of countries and their zones alphabetically
     for sub_menu in menu:
         if sub_menu.get_attribute("textContent") == "Countries":
             sub_menu.click()
             break
 
-    # check sorted coubtries
-    contries = driver.find_element_by_css_selector("h1").get_attribute("textContent").strip()
-    assert contries == "Countries"
+    countries = driver.find_element_by_css_selector("h1").get_attribute("textContent").strip()
+    assert countries == "Countries"
 
     row = driver.find_elements_by_css_selector("table .row")
     assert len(row) != 0
@@ -41,18 +42,30 @@ def test_litecart_check_countries_and_zones(driver):
     # source unsorted list
     country_a = []
 
-    for country in row:
+    for count in  range(len(row)):
+        country = row[count]
         country_a.append(country.find_elements_by_css_selector("a")[0].text)
 
-    # create sorted list by abc
-    country_a_sorted = sorted(country_a)
+        if country.find_elements_by_css_selector("td")[-2].get_attribute("textContent") != '0':
+            country.find_elements_by_css_selector("a")[-1].click()
+            row_zones = driver.find_elements_by_css_selector("#table-zones tr")
 
-    assert country_a == country_a_sorted
+            assert len(row_zones) > 2
 
-    # check zones in countries
+            row_zones = row_zones[1:-1]
+            country_zones = []
+
+            for row_zona in row_zones:
+                country_zones.append(row_zona.find_elements_by_css_selector("td")[2].text)
+
+            assert country_zones == sorted(country_zones)
+
+            driver.find_element_by_css_selector('button[name=cancel]').click()
+            row = driver.find_elements_by_css_selector("table .row")
+
+    assert country_a == sorted(country_a)
+
+    # Stage 2
 
 
-
-
-    pass
 
