@@ -28,44 +28,74 @@ def test_litecart_check_countries_and_zones(driver):
 
     # Stage 1
     # Check sorting of countries and their zones alphabetically
-    for sub_menu in menu:
-        if sub_menu.get_attribute("textContent") == "Countries":
-            sub_menu.click()
-            break
+    for sub_menu in range(len(menu)):
+        if menu[sub_menu].get_attribute("textContent") == "Countries":
+            menu[sub_menu].click()
 
-    countries = driver.find_element_by_css_selector("h1").get_attribute("textContent").strip()
-    assert countries == "Countries"
+            countries = driver.find_element_by_css_selector("h1").get_attribute("textContent").strip()
+            assert countries == "Countries"
 
-    row = driver.find_elements_by_css_selector("table .row")
-    assert len(row) != 0
-
-    # source unsorted list
-    country_a = []
-
-    for count in  range(len(row)):
-        country = row[count]
-        country_a.append(country.find_elements_by_css_selector("a")[0].text)
-
-        if country.find_elements_by_css_selector("td")[-2].get_attribute("textContent") != '0':
-            country.find_elements_by_css_selector("a")[-1].click()
-            row_zones = driver.find_elements_by_css_selector("#table-zones tr")
-
-            assert len(row_zones) > 2
-
-            row_zones = row_zones[1:-1]
-            country_zones = []
-
-            for row_zona in row_zones:
-                country_zones.append(row_zona.find_elements_by_css_selector("td")[2].text)
-
-            assert country_zones == sorted(country_zones)
-
-            driver.find_element_by_css_selector('button[name=cancel]').click()
             row = driver.find_elements_by_css_selector("table .row")
+            assert len(row) != 0
 
-    assert country_a == sorted(country_a)
+            # source unsorted list
+            country_a = []
 
-    # Stage 2
+            for count in  range(len(row)):
+                country = row[count]
+                country_a.append(country.find_elements_by_css_selector("a")[0].text)
+
+                if country.find_elements_by_css_selector("td")[-2].get_attribute("textContent") != '0':
+                    country.find_elements_by_css_selector("a")[-1].click()
+                    row_zones = driver.find_elements_by_css_selector("#table-zones tr")
+
+                    assert len(row_zones) > 2
+
+                    row_zones = row_zones[1:-1]
+                    country_zones = []
+
+                    for row_zona in row_zones:
+                        country_zones.append(row_zona.find_elements_by_css_selector("td")[2].text)
+
+                    assert country_zones == sorted(country_zones)
+
+                    driver.find_element_by_css_selector('button[name=cancel]').click()
+                    row = driver.find_elements_by_css_selector("table .row")
+
+            assert country_a == sorted(country_a)
+            menu = driver.find_elements_by_css_selector("span.name")
+
+        # Stage 2
+        elif menu[sub_menu].get_attribute("textContent") == "Geo Zones":
+            menu[sub_menu].click()
+
+            countries = driver.find_element_by_css_selector("h1").get_attribute("textContent").strip()
+            assert countries == "Geo Zones"
+
+            row_geo_country = driver.find_elements_by_css_selector(".row")
+
+            for count in  range(len(row_geo_country)):
+                country = row_geo_country[count]
+                if country.find_elements_by_css_selector("td")[-2].get_attribute("textContent") != '0':
+                    country.find_element_by_css_selector("a").click()
+                    row_zones = driver.find_elements_by_css_selector("#table-zones tr")
+                    row_zones = row_zones[1:-1]
+                    zones = []
+                    for row_zona in row_zones:
+                        selects = row_zona.find_elements_by_css_selector("td:nth-child(3)>select option")
+                        for is_select in selects:
+                            if is_select.get_attribute("selected") == "true":
+                                zones.append(is_select.get_attribute("textContent"))
+                                break
+
+                assert zones == sorted(zones)
+
+                driver.find_element_by_css_selector('button[name=cancel]').click()
+                row_geo_country = driver.find_elements_by_css_selector(".row")
+
+            menu = driver.find_elements_by_css_selector("span.name")
+
+
 
 
 
