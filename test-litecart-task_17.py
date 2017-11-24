@@ -44,11 +44,11 @@ def test_litecart_task_17(driver):
         h1 = driver.find_element_by_css_selector('h1').text
         if h1.startswith("Edit Product"):
             driver.find_element_by_css_selector('[name=cancel]').click()
+            logs = driver.get_log("browser")
+            if len(logs):
+                print(logs)
+
         if (len(main_item) - 1) <= current_count:
             break
         current_count += 1
-        logs = driver.get_log("browser")
-        if len(logs):
-            print(logs)
-
 
